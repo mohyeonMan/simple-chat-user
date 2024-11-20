@@ -3,26 +3,21 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'mohyeonman/simple-chat-user:latest'
-        DOCKER_CREDENTIALS_ID = 'docker_id_mohyeonman'
+        GITHUB_CREDENTIALS_ID = 'github-credentials'
+        DOCKER_CREDENTIALS_ID = 'docker-credentials' 
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 echo 'Cloning the repository...'
-                checkout scm
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Building the project with Gradle...'
-                sh './gradlew build'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Running tests with Gradle...'
-                sh './gradlew test'
+                checkout([$class: 'GitSCM',
+                          branches: [[name: '*/main']],
+                          userRemoteConfigs: [[
+                              url: 'https://github.com/mohyeonMan/simple-chat-user.git',
+                              credentialsId: "${GITHUB_CREDENTIALS_ID}" 
+                          ]]
+                ])
             }
         }
         stage('Build Docker Image') {
