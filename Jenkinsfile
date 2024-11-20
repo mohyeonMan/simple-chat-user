@@ -20,6 +20,20 @@ pipeline {
                 ])
             }
         }
+        stage('Build and Test') {
+            steps {
+                echo 'Building the project with Gradle...'
+                sh './gradlew build'
+                echo 'Running tests with Gradle...'
+                sh './gradlew test'
+            }
+        }
+        stage('Verify Build Output') {
+            steps {
+                echo 'Verifying JAR file exists...'
+                sh 'ls -l build/libs/'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
