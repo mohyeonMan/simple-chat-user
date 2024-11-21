@@ -22,6 +22,8 @@ pipeline {
         }
         stage('Build and Test') {
             steps {
+
+                sh 'chmod +x ./gradlew'
                 echo 'Building the project with Gradle...'
                 sh './gradlew build'
                 echo 'Running tests with Gradle...'
