@@ -20,6 +20,18 @@ pipeline {
                 ])
             }
         }
+
+        stage('yml download') {
+            echo 'application.yml download...'
+            steps {
+                withCredentials([file(credentialsId: 'application-user', variable: 'application')]) {
+                    script {
+                        sh 'cp $application src/main/resources/application.yml'
+                    }
+                }
+            }
+        }
+
         stage('Build and Test') {
             steps {
 
