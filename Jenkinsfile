@@ -4,7 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'mohyeonman/simple-chat-user:latest'
         GITHUB_CREDENTIALS_ID = 'github-credentials'
-        DOCKER_CREDENTIALS_ID = 'docker-credentials' 
+        DOCKER_CREDENTIALS_ID = 'docker-credentials'
+        SWARM_MANAGER = 'simple-chat-user-ssh'
     }
 
     stages {
@@ -68,6 +69,38 @@ pipeline {
                             docker push ${DOCKER_IMAGE}
                             docker logout
                         '''
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Swarm') {
+            steps {
+                sshagent(['simple-chat-user-pem']) {
+                    script {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${SWARM_MANAGER} <<EOF
+                        docker service update --image ${DOCKER_IMAGE} chat-service || \
+                        docker service create --name chat-service --replicas 1 -p 8080:8080 ${DOCKER_IMAGE}
+                        EOF
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Swarm') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'simple-chat-user-ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_SERVER')]) {
+                    sshagent(['simple-chat-user-pem']) {
+                        script {
+                            sh """
+                            ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_SERVER} <<EOF
+                            docker service update --image ${DOCKER_IMAGE} chat-service || \
+                            docker service create --name chat-service --replicas 1 -p 8080:8080 ${DOCKER_IMAGE}
+                            EOF
+                            """
+                        }
                     }
                 }
             }
