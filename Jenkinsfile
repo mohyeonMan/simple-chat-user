@@ -21,12 +21,16 @@ pipeline {
             }
         }
 
-        stage('yml download') {
+         stage('Prepare application.yml') {
             steps {
-                echo 'application.yml download...'
+                echo 'Preparing application.yml...'
                 withCredentials([file(credentialsId: 'application-user', variable: 'application')]) {
                     script {
-                        sh 'cp $application src/main/resources/application.yml'
+                        // Ensure the directory exists
+                        sh '''
+                            mkdir -p src/main/resources
+                            cp $application src/main/resources/application.yml
+                        '''
                     }
                 }
             }
