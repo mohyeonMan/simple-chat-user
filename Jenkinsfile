@@ -22,8 +22,8 @@ pipeline {
         }
 
         stage('yml download') {
-            echo 'application.yml download...'
             steps {
+                echo 'application.yml download...'
                 withCredentials([file(credentialsId: 'application-user', variable: 'application')]) {
                     script {
                         sh 'cp $application src/main/resources/application.yml'
