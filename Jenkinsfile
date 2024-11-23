@@ -4,8 +4,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'mohyeonman/simple-chat-user:latest'
         GITHUB_CREDENTIALS_ID = 'github-credentials'
-        DOCKER_CREDENTIALS_ID = 'docker-credentials'
-        SWARM_MANAGER = 'simple-chat-user-ssh'
     }
 
     stages {
@@ -83,7 +81,7 @@ pipeline {
                     sh '''
                     ssh -i ${PEM_FILE} -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_SERVER} <<EOF
                     docker service update --image ${DOCKER_IMAGE} simple-chat-user || \
-                    docker service create --name simple-chat-user --replicas 1 -p 80:80 ${DOCKER_IMAGE}
+                    docker service create --name simple-chat-user --replicas 1 -p 0.0.0.0:80:80 ${DOCKER_IMAGE}
                     <<EOF
                     '''
                 }
