@@ -82,9 +82,9 @@ pipeline {
                 ]) {
                     sh '''
                     ssh -i ${PEM_FILE} -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_SERVER} <<EOF
-                    docker service update --image ${DOCKER_IMAGE} simple-chat-user || \
+                    docker service update --image ${DOCKER_IMAGE} simple-chat-user || \needs-restarting -r
                     docker service create --name simple-chat-user --replicas 1 -p 8080:8080 ${DOCKER_IMAGE}
-                    EOF
+                    <<EOF
                     '''
                 }
             }
