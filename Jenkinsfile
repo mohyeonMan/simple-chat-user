@@ -77,7 +77,7 @@ pipeline {
         stage('Deploy to Swarm') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'simple-chat-user-ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_SERVER')]) {
-                    sshagent(credentials : ['simple-chat-user-pem']) {
+                    sshagent(['simple-chat-user-pem']) {
                         script {
                             sh """
                             ls -l /var/lib/jenkins/workspace/simple-chat-user@tmp/
