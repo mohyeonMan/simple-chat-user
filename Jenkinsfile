@@ -81,10 +81,10 @@ pipeline {
                     usernamePassword(credentialsId: 'simple-chat-user-ssh', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_SERVER')
                 ]) {
                     sh '''
-                    ssh -i ${PEM_FILE} -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_SERVER} <<EOF
+                    ssh -i ${PEM_FILE} -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_SERVER} <<_EOF_
                     docker service update --image ${DOCKER_IMAGE} simple-chat-user || \
                     docker service create --name simple-chat-user --replicas 1 -p 8080:8080 ${DOCKER_IMAGE}
-                    <<EOF
+                    _EOF_
                     '''
                 }
             }
