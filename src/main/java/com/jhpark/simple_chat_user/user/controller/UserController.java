@@ -7,7 +7,9 @@ import com.jhpark.simple_chat_user.user.dto.UserDTO;
 import com.jhpark.simple_chat_user.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@RequestBody UserDTO userDto) {
         userService.registerUser(userDto);
+
+        log.info(userDto.toString());
 
         return ResponseEntity.ok().build();
     }
