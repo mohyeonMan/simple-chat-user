@@ -2,17 +2,11 @@ package com.jhpark.simple_chat_user.security.controller;
 
 import com.jhpark.simple_chat_user.security.dto.JwtResponse;
 import com.jhpark.simple_chat_user.security.dto.LoginRequest;
-import com.jhpark.simple_chat_user.security.entity.RefreshToken;
 import com.jhpark.simple_chat_user.security.service.AuthService;
-import com.jhpark.simple_chat_user.security.util.JwtUtil;
 import com.jhpark.simple_chat_user.user.entity.User;
-import com.jhpark.simple_chat_user.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

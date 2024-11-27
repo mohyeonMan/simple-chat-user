@@ -5,21 +5,30 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.jhpark.simple_chat_user.user.entity.User;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
+import javax.crypto.spec.SecretKeySpec;
+
 @Component
 public class JwtUtil {
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS512); 
+    private final Key secretKey; 
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 900000; // 15분
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 604800000; // 7일
+    
+    public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
+        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
+                SignatureAlgorithm.HS512.getJcaName());
+    }
 
     public String generateAccessToken(final User user) {
         return Jwts.builder()
@@ -30,7 +39,7 @@ public class JwtUtil {
                         .toList()) 
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
@@ -43,7 +52,7 @@ public class JwtUtil {
                         .toList()) 
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
@@ -54,7 +63,7 @@ public class JwtUtil {
 
     public Claims parseClaims(final String token){
         try {
-            return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+            return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
         } catch (Exception e) {
             throw new RuntimeException("토큰 파싱에 실패했습니다.");
         }
