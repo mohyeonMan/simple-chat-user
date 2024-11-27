@@ -90,15 +90,18 @@ pipeline {
     }
 
     post {
-        always {
-            echo 'Cleaning up workspace...'
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Please check the logs.'
-        }
+    always {
+        echo 'Cleaning up workspace...'
+        cleanWs()
     }
+    success {
+        echo 'Pipeline completed successfully!'
+        echo 'Pruning Docker images older than 24 hours...'
+        sh 'docker image prune -a -f --filter "until=24h"'
+    }
+    failure {
+        echo 'Pipeline failed. Please check the logs.'
+    }
+}
+
 }
