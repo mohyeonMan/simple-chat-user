@@ -19,7 +19,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String AUTH_PREFIX = "Bearer";
 
-    private final AuthService authService;;
+    private final AuthService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

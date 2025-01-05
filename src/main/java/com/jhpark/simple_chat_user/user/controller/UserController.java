@@ -19,8 +19,7 @@ public class UserController {
 
     @GetMapping("/check-username")
     public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
-        boolean isUsernameTaken = userService.isUsernameTaken(username);
-        return ResponseEntity.ok(isUsernameTaken);
+        return ResponseEntity.ok(userService.isUsernameTaken(username));
     }
 
     @PostMapping("/register")
